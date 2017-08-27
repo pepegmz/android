@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:descendantFocusability="beforeDescendants"
+    >
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            card_view:cardCornerRadius="2dp"
+            android:layout_margin="5dp"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <ImageView
+                        android:id="@+id/thumbnail"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_alignParentTop="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/antro"
+                        />
+
+                    <TextView
+                        android:id="@+id/line1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="3"
+                        android:padding="8dp"
+                        android:text="Antros y Bares"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="22dp" />
+
+                </RelativeLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="10dp"
+                    >
+
+                        <CheckBox
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/face1"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:button="@null"
+                            android:background="@drawable/face1_selector"
+                            android:padding="5dp"
+                            android:scaleX=".7"
+                            android:scaleY=".7"
+                            />
+
+
+                    <CheckBox
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/face2"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:button="@null"
+                        android:background="@drawable/face2_selector"
+                        android:padding="5dp"
+                        android:scaleX=".7"
+                        android:scaleY=".7"
+                        />
+
+                    <CheckBox
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/face3"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:button="@null"
+                        android:background="@drawable/face3_selector"
+                        android:padding="5dp"
+                        android:scaleX=".7"
+                        android:scaleY=".7"
+                        />
+
+                    <CheckBox
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/face4"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:button="@null"
+                        android:background="@drawable/face4_selector"
+                        android:padding="5dp"
+                        android:scaleX=".7"
+                        android:scaleY=".7"
+                        />
+
+                    <CheckBox
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/face5"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:button="@null"
+                        android:background="@drawable/face5_selector"
+                        android:padding="5dp"
+                        android:scaleX=".7"
+                        android:scaleY=".7"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+</FrameLayout>
