@@ -5,18 +5,10 @@
     android:id="@+id/item"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".05"
-        android:orientation="horizontal"
-        android:background="@color/primary_dark"
-        ></LinearLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".8"
+        android:layout_height="match_parent"
         android:background="@color/iron"
         >
 
@@ -30,13 +22,4 @@
 
 
     </android.support.v4.widget.NestedScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".15"
-        android:orientation="horizontal"
-        android:background="@color/primary_dark"
-        ></LinearLayout>
-
 </LinearLayout>

@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SelectCategoriesActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(intent);
                 //startActivityForResult(intent, REQUEST_SIGNUP);
             }
@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
         finish();
     }
 
@@ -133,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            _passwordText.setError("between cat4 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
