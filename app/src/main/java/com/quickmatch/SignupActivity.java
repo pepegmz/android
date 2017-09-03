@@ -158,7 +158,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
             _passwordText.setError(null);
         }
 
-        return valid;
+        //return valid;
+        return true;
     }
 
     public void showDatePickerDialog(View v) {
