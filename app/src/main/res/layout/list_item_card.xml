@@ -8,6 +8,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:descendantFocusability="beforeDescendants"
+    tools:context="components.selectCategories.SelectCategoriesActivity"
     >
 
         <android.support.v7.widget.CardView
@@ -43,12 +44,12 @@
                         />
 
                     <TextView
-                        android:id="@+id/line1"
+                        android:id="@+id/category_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="3"
                         android:padding="8dp"
-                        android:text="Antros y Bares"
+                        android:text="CategoryName"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:textSize="22dp" />
@@ -74,6 +75,7 @@
                             android:padding="5dp"
                             android:scaleX=".7"
                             android:scaleY=".7"
+                            android:checked="true"
                             />
 
 

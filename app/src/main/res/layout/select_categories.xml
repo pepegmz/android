@@ -5,10 +5,56 @@
     android:id="@+id/item"
     >
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight=".1"
+        >
+
+        <ImageView
+            android:id="@+id/img_help"
+            android:layout_height="72dp"
+            android:layout_width="72dp"
+            android:gravity="start"
+            android:layout_alignParentLeft="true"
+            android:padding="10dp"
+            android:src="@drawable/help"
+            >
+        </ImageView>
+
+        <TextView
+            android:text="Selecciona tus Categorias"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:padding="5dp">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/img_done"
+            android:layout_height="72dp"
+            android:layout_width="72dp"
+            android:gravity="start"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/done"
+            >
+
+        </ImageView>
+
+
+
+    </RelativeLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".9"
         android:background="@color/iron"
         >
 
@@ -18,7 +64,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/white"
-            ></LinearLayout>
+            >
+
+        </LinearLayout>
 
 
     </android.support.v4.widget.NestedScrollView>
