@@ -8,7 +8,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:descendantFocusability="beforeDescendants"
-    tools:context="components.selectCategories.SelectCategoriesActivity"
+    tools:context="components.selectCategories.SelectPreferencesActivity"
     >
 
         <android.support.v7.widget.CardView

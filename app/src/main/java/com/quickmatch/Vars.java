@@ -5,7 +5,10 @@ package com.quickmatch;
  */
 
 class Vars {
-    private static final String IP_SERVER = "http://192.168.15.9";
+    private static final String IP_SERVER = "http://192.168.1.65";
     private static final String PATH_FOLDER = "/quickmatch/php/";
-    public static final String GET_CATEGORIES = IP_SERVER + PATH_FOLDER + "get-categories.php";
+    static final String GET_CATEGORIES = IP_SERVER + PATH_FOLDER + "get-categories.php";
+    static final String LOGIN = IP_SERVER + PATH_FOLDER + "login.php";
+    static final String REGISTER = IP_SERVER + PATH_FOLDER + "register.php";
+    static final String GET_NEGOCIOS = IP_SERVER + PATH_FOLDER + "get-tipo_neg.php";
 }

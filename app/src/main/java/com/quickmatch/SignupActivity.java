@@ -23,12 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-
 import components.SignupActivity.DatePickerFragment;
-import components.selectCategories.SelectCategoriesActivity;
+import components.selectCategories.SelectPreferencesActivity;
 import data.HttpHandler;
 import models.Category;
 
@@ -135,8 +131,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        new GetCategories().execute();
-        //startActivity(new Intent(SignupActivity.this, SelectCategoriesActivity.class));
+        new GetTipoNegocios().execute();
+        //startActivity(new Intent(SignupActivity.this, SelectPreferencesActivity.class));
         //finish();
     }
 
@@ -194,7 +190,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
 
-    private class GetCategories extends AsyncTask<Void, Void, Void> {
+    private class GetTipoNegocios extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -218,10 +214,9 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
             if (jsonStr != null) {
                 try {
-                    //JSONObject jsonObj = new JSONObject(jsonStr);
-
+                    JSONObject jsonObj = new JSONObject(jsonStr);
                     // Getting JSON Array node
-                    JSONArray categories = new JSONArray(jsonStr);
+                    JSONArray categories = jsonObj.getJSONArray("categorias");
 
                     // looping through All Contacts
                     for (int i = 0; i < categories.length(); i++) {
@@ -275,7 +270,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
                 pDialog.dismiss();
 
 
-            Intent intent = new Intent(SignupActivity.this, SelectCategoriesActivity.class);
+            Intent intent = new Intent(SignupActivity.this, SelectPreferencesActivity.class);
             intent.putParcelableArrayListExtra("categoriesList", categoriesList);
             startActivity(intent);
             SignupActivity.this.finish();

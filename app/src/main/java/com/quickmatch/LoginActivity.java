@@ -12,7 +12,11 @@ package com.quickmatch;
         import android.widget.TextView;
         import android.widget.Toast;
 
-        import components.selectCategories.SelectCategoriesActivity;
+        import com.loopj.android.http.AsyncHttpResponseHandler;
+        import com.loopj.android.http.RequestParams;
+
+        import cz.msebera.android.httpclient.Header;
+        import data.AsyncHttpClientManagement;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -78,15 +82,25 @@ public class LoginActivity extends AppCompatActivity {
 
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        RequestParams params = new RequestParams();
+        params.put("email", email);
+        params.put("password", password);
+
+        AsyncHttpClientManagement.post(Vars.LOGIN, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Toast.makeText(getApplicationContext(), "statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
+                onLoginSuccess();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getApplicationContext(), "statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
+                onLoginFailed();
+                progressDialog.dismiss();
+            }
+        });
     }
 
 
@@ -97,6 +111,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
+
+
+
                 this.finish();
             }
         }
@@ -143,3 +160,6 @@ public class LoginActivity extends AppCompatActivity {
         return valid;
     }
 }
+
+
+

@@ -24,7 +24,7 @@
         </ImageView>
 
         <TextView
-            android:text="Selecciona tus Categorias"
+            android:text="Selecciona tus Preferencias:"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/white"

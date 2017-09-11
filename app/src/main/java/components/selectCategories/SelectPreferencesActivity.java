@@ -18,7 +18,7 @@ package components.selectCategories;
 
         import models.Category;
 
-public class SelectCategoriesActivity extends Activity {
+public class SelectPreferencesActivity extends Activity {
 
     private static final String TAG = "CardListActivity";
     ImageView btn_done, btn_help;
@@ -64,8 +64,8 @@ public class SelectCategoriesActivity extends Activity {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SelectCategoriesActivity.this, MenuActivity.class));
-                SelectCategoriesActivity.this.finish();
+                startActivity(new Intent(SelectPreferencesActivity.this, MenuActivity.class));
+                SelectPreferencesActivity.this.finish();
             }
         });
 
