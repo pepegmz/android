@@ -72,7 +72,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <!-- Nac Date -->
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -97,7 +97,32 @@
                 android:onClick="showDatePickerDialog"
                 />
 
-        </LinearLayout>
+        </LinearLayout>-->
+
+    <!-- Select Pais: -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="Pais:"
+            android:gravity="start"
+            android:textSize="16dip"/>
+
+        <Spinner
+            android:id="@+id/cbx_pais"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
 
         <!-- Select Edo. -->
         <LinearLayout
@@ -112,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:text="Location:"
+                android:text="Estado:"
                 android:gravity="start"
                 android:textSize="16dip"/>
 
@@ -123,6 +148,35 @@
                  />
 
         </LinearLayout>
+
+    <!-- Select Municipio. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="Municipio:"
+            android:gravity="start"
+            android:textSize="16dip"/>
+
+        <Spinner
+            android:id="@+id/cbx_mun"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            />
+
+    </LinearLayout>
+
+
 
 
         <!-- Signup Button -->

@@ -3,6 +3,9 @@ package models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by eitdev on 11/09/17.
  */
@@ -14,7 +17,6 @@ public class Negocio implements Parcelable {
 
     public int generatedFacesIDS[];
     public int preferenceValue = 1;
-
 
 
     public Negocio(String id_negocio, String negocio_name) {
@@ -83,5 +85,20 @@ public class Negocio implements Parcelable {
 
     public void setPreferenceValue(int preferenceValue) {
         this.preferenceValue = preferenceValue;
+    }
+
+    public String toJSON() {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", getId_negocio());
+            jsonObject.put("value", getPreferenceValue());
+
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "";
+        }
     }
 }
