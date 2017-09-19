@@ -89,14 +89,16 @@ public class LoginActivity extends AppCompatActivity {
         AsyncHttpClientManagement.post(Vars.LOGIN, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(), "statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
-                onLoginSuccess();
+                if (statusCode == 200)
+                    onLoginSuccess();
+                else
+                    Toast.makeText(getApplicationContext(), "No se ha podido iniciar su sesion statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getApplicationContext(), "statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No se ha podido iniciar su sesion statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
                 onLoginFailed();
                 progressDialog.dismiss();
             }

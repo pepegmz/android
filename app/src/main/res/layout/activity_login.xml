@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:hint="Usuario:"
-                android:text="pepe.gmz.404@gmail.com"/>
+                android:text="pepe@mail.com"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Contraseña:"
-                android:text="aA123456"
+                android:text="A123456"
                 />
         </android.support.design.widget.TextInputLayout>
 

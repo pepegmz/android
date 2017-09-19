@@ -16,6 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,20 +29,38 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import components.SignupActivity.DatePickerFragment;
+import components.SignupActivity.EstadosArrayAdapter;
+import components.SignupActivity.MunicipiosArrayAdapter;
+import components.SignupActivity.PaisesArrayAdapter;
 import components.selectCategories.SelectPreferencesActivity;
+import cz.msebera.android.httpclient.Header;
+import data.AsyncHttpClientManagement;
 import data.HttpHandler;
 import models.Category;
+import models.Estado;
+import models.Municipio;
+import models.Negocio;
+import models.Pais;
 
 public class SignupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "SignupActivity";
 
-    EditText _nameText;
-    EditText _emailText;
-    EditText _passwordText;
+    EditText _nameText, _emailText, _passwordText, _confimPassword;
     Button _signupButton;
     TextView _loginLink;
+    Spinner sp_paises, sp_estados, sp_municipios;
     private ProgressDialog pDialog;
-    ArrayList<Category> categoriesList;
+
+    PaisesArrayAdapter paisesArrayAdapter;
+    EstadosArrayAdapter estadosArrayAdapter;
+    MunicipiosArrayAdapter municipiosArrayAdapter;
+
+    ArrayList<Negocio> tipoNegociosList;
+    ArrayList<Pais> listaPaises;
+    ArrayList<Estado> listaEstados;
+    ArrayList<Municipio> listaMunicipios;
+
+    public static String MUNICIPIO_ID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,34 +70,41 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         _nameText = (EditText) findViewById(R.id.input_name);
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
+        _confimPassword = (EditText) findViewById(R.id.confirm_input_password);
         _signupButton = (Button) findViewById(R.id.btn_signup);
         _loginLink = (TextView) findViewById(R.id.link_login);
 
-        categoriesList = new ArrayList<>();
+        tipoNegociosList = new ArrayList<>();
 
         // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.cbx_edos);
+        sp_paises = (Spinner) findViewById(R.id.cbx_pais);
+        sp_estados = (Spinner) findViewById(R.id.cbx_edos);
+        sp_municipios = (Spinner) findViewById(R.id.cbx_mun);
 
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
+        sp_paises.setEnabled(false);
+        sp_estados.setEnabled(false);
+        sp_municipios.setEnabled(false);
+
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("Aguascalientes");
-        categories.add("Asientos");
-        categories.add("Calvillo");
-        categories.add("El LLano");
-        categories.add("Pabellon");
-        categories.add("Rincon de Romos");
+        List<String> estados = new ArrayList<String>();
+        estados.add("Aguascalientes");
+        estados.add("Asientos");
+        estados.add("Calvillo");
+        estados.add("Cosio");
+        estados.add("El LLano");
+        estados.add("Jesus Maria");
+        estados.add("Pabellon");
+        estados.add("Rincon de Romos");
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, estados);
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        sp_municipios.setAdapter(dataAdapter);
 
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +119,200 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
                 finish();
+            }
+        });
+
+        getPaises();
+
+    }
+
+    public void getPaises(){
+        AsyncHttpClientManagement.get(Vars.GET_PAISES, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    JSONArray paises = response.getJSONArray("paises");
+
+                    for (int i=0;i<paises.length();i++){
+                        JSONObject pais = paises.getJSONObject(i);
+
+                        String idPais = pais.getString("idpais");
+                        String namePais = pais.getString("nom_pais");
+
+
+                        //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
+
+                        listaPaises = new ArrayList<Pais>();
+                        listaPaises.add(new Pais(idPais, namePais));
+
+                    }
+
+                    paisesArrayAdapter = new PaisesArrayAdapter(SignupActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            listaPaises);
+                    sp_paises.setAdapter(paisesArrayAdapter);
+
+                    sp_paises.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view,
+                                                   int position, long id) {
+                            // Here you get the current item (a User object) that is selected by its position
+                            Pais pais = paisesArrayAdapter.getItem(position);
+
+                            sp_paises.setEnabled(true);
+
+                            getEstados(pais.getID());
+
+                            // Here you can do the action you want to...
+                            //Toast.makeText(SignupActivity.this, "ID: " + pais.getID() + "\nName: " + pais.getNombre(),
+                                    //Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapter) {  }
+                    });
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(SignupActivity.this, "Status Code: " + statusCode,Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    public void getEstados(String paisID){
+
+        RequestParams params = new RequestParams();
+        params.put("id_pais", paisID);
+
+        AsyncHttpClientManagement.get(Vars.GET_ESTADOS, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    JSONArray estados = response.getJSONArray("estados");
+
+                    for (int i = 0; i < estados.length(); i++) {
+                        JSONObject estado = estados.getJSONObject(i);
+
+                        String idEstado = estado.getString("idestado");
+                        String idPais = estado.getString("idpais");
+                        String nameEstado = estado.getString("nom_est");
+
+                        //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
+
+                        listaEstados = new ArrayList<Estado>();
+                        listaEstados.add(new Estado(idEstado, nameEstado, idPais));
+
+                    }
+
+                    estadosArrayAdapter = new EstadosArrayAdapter(SignupActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            listaEstados);
+                    sp_estados.setAdapter(estadosArrayAdapter);
+
+                    sp_estados.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view,
+                                                   int position, long id) {
+                            // Here you get the current item (a User object) that is selected by its position
+                            Estado estado = estadosArrayAdapter.getItem(position);
+                            sp_estados.setEnabled(true);
+
+                            getMunicipios(estado.getID());
+                            // Here you can do the action you want to...
+                            //Toast.makeText(SignupActivity.this, "ID: " + pais.getID() + "\nName: " + pais.getNombre(),
+                            //Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapter) {
+                        }
+                    });
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+
+    public void getMunicipios(String estadoID){
+
+        RequestParams params = new RequestParams();
+        params.put("id_estado", estadoID);
+
+        AsyncHttpClientManagement.get(Vars.GET_MUNICIPIOS, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    JSONArray municipios = response.getJSONArray("municipios");
+
+                    for (int i = 0; i < municipios.length(); i++) {
+                        JSONObject municipio = municipios.getJSONObject(i);
+
+                        String idMunicipio = municipio.getString("idmun");
+                        String idEstado = municipio.getString("idestado");
+                        String nameMunicipio = municipio.getString("nom_mun");
+
+                        //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
+
+                        listaMunicipios = new ArrayList<Municipio>();
+                        listaMunicipios.add(new Municipio(idMunicipio, nameMunicipio, idEstado));
+
+                    }
+
+
+
+
+
+                    municipiosArrayAdapter = new MunicipiosArrayAdapter(SignupActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            listaMunicipios);
+                    sp_municipios.setAdapter(municipiosArrayAdapter);
+
+                    sp_municipios.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view,
+                                                   int position, long id) {
+                            // Here you get the current item (a User object) that is selected by its position
+                            Municipio municipio = municipiosArrayAdapter.getItem(position);
+
+                            MUNICIPIO_ID = municipio.getID();
+
+                            sp_municipios.setEnabled(true);
+                            // Here you can do the action you want to...
+                            //Toast.makeText(SignupActivity.this, "ID: " + pais.getID() + "\nName: " + pais.getNombre(),
+                            //Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapter) {
+                        }
+                    });
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -148,26 +372,32 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+        String retrypassword = _confimPassword.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+            _nameText.setError("Tu nombre de usuario tener por lo menos 3 caracteres");
             valid = false;
         } else {
             _nameText.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError("Ingresa una direccion de correo valida");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            _passwordText.setError("La contraseña debe tener de 4 a 10 caracteres alphanumericos");
             valid = false;
         } else {
             _passwordText.setError(null);
+        }
+
+        if (!password.equals(retrypassword)){
+            _confimPassword.setError("Las contraseñas no coinciden.");
+            valid = false;
         }
 
         //return valid;
@@ -208,7 +438,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
             HttpHandler sh = new HttpHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(Vars.GET_CATEGORIES);
+            String jsonStr = sh.makeServiceCall(Vars.GET_NEGOCIOS);
 
             Log.e(TAG, "Response from url: " + jsonStr);
 
@@ -216,21 +446,19 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     // Getting JSON Array node
-                    JSONArray categories = jsonObj.getJSONArray("categorias");
+                    JSONArray tipoNegociosArray = jsonObj.getJSONArray("tipoNegocios");
 
                     // looping through All Contacts
-                    for (int i = 0; i < categories.length(); i++) {
-                        JSONObject c = categories.getJSONObject(i);
+                    for (int i = 0; i < tipoNegociosArray.length(); i++) {
+                        JSONObject c = tipoNegociosArray.getJSONObject(i);
 
-                        String id_categoria = c.getString("idcateg");
                         String id_negocio = c.getString("idtiponeg");
-                        String categoria_name = c.getString("categ");
                         String negocio_name = c.getString("tipo");
 
                         // tmp hash map for single contact
-                        Category category = new Category(id_categoria, id_negocio, categoria_name, negocio_name);
+                        Negocio negocio = new Negocio(id_negocio, negocio_name);
 
-                        categoriesList.add(category);
+                        tipoNegociosList.add(negocio);
                     }
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -271,7 +499,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
 
             Intent intent = new Intent(SignupActivity.this, SelectPreferencesActivity.class);
-            intent.putParcelableArrayListExtra("categoriesList", categoriesList);
+            intent.putParcelableArrayListExtra("tipoNegociosList", tipoNegociosList);
             startActivity(intent);
             SignupActivity.this.finish();
 
