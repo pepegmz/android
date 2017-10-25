@@ -1,4 +1,4 @@
-package components.selectCategories;
+package components.selectTipoNeg;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -33,7 +33,7 @@ public class tipoNegocioView extends FrameLayout {
 
         addView(inflater.inflate(R.layout.list_item_card, null));
 
-        TextView textView =  (TextView)findViewById(R.id.category_name);
+        TextView textView =  (TextView)findViewById(R.id.lbl_tiponeg);
         textView.setText(negocio.negocio_name);
 
         ImageView image = (ImageView)findViewById(R.id.thumbnail);

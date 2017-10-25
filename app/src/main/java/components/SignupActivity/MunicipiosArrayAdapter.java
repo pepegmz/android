@@ -60,7 +60,7 @@ public class MunicipiosArrayAdapter extends ArrayAdapter<Municipio> {
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        //return super.getDropDownView(position, convertView, parent);
+
 
         TextView label = new TextView(context);
         label.setTextColor(Color.WHITE);
@@ -68,5 +68,9 @@ public class MunicipiosArrayAdapter extends ArrayAdapter<Municipio> {
         label.setText(values.get(position).getNombre());
 
         return label;
+
+        //return super.getDropDownView(position, convertView, parent);
+
+
     }
 }

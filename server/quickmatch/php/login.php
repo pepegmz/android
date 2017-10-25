@@ -1,45 +1,85 @@
 <?php
 
-/**
- * @author Ravi Tamada
- * @link http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/ Complete tutorial
- */
+error_reporting(0);
 
-require_once 'include/DB_Functions.php';
-$db = new DB_Functions();
 
-// json response array
-$response = array("error" => FALSE);
+$email = $_POST["email"];
+$password = $_POST["password"];
 
-if (isset($_POST['email']) && isset($_POST['password'])) {
+//$imagen_generica = "user.png";
 
-    // receiving the post params
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+include("conexion.php");
 
-    // get the user by email and password
-    $user = $db->getUserByEmailAndPassword($email, $password);
+$consulta = "SELECT * FROM usuario WHERE correo like '$email' and pass like '$password'";
+$ejecutar_consulta = $conexion->query($consulta);
 
-    if ($user != false) {
-        // use is found
-        $response["error"] = FALSE;
-        $response["uid"] = $user["unique_id"];
-        $response["user"]["name"] = $user["name"];
-        $response["user"]["email"] = $user["email"];
-        $response["user"]["created_at"] = $user["created_at"];
-        $response["user"]["updated_at"] = $user["updated_at"];
-        echo json_encode($response);
-    } else {
-        // user is not found with the credentials
-        $response["error"] = TRUE;
-        $response["error_msg"] = "Login credentials are wrong. Please try again!";
-        echo json_encode($response);
-    }
-} else {
-    // required post params is missing
-    $response["error"] = TRUE;
-    $response["error_msg"] = "Required parameters email or password is missing!";
-    echo json_encode($response);
+
+$num_regs = $ejecutar_consulta->num_rows;
+
+if (!$ejecutar_consulta){
+	$status="error";
+	$message="No se puede obtener la informacion de la Base de Datos";
+	http_response_code(500);
 }
-?>
 
+if($num_regs == 1)
+	{
+		$user = $ejecutar_consulta->fetch_assoc();
+		$id = $user["id_usuario"];
+		$query = "SELECT * FROM preferences where id_user = '$id'";
+		$result = $conexion->query($query);
+		$num_regs = $result->num_rows;
+
+		if ($result)
+		{
+		$status="success";
+		$message="Consulta Finalizada";
+		}
+		else
+		{
+		$status="error";
+		$message="No se puede obtener las categorias";
+		}
+
+			if($num_regs == 1)
+			{
+				$status = "success";
+				$message = "Usuario Logueado";
+				//$user = $ejecutar_consulta->fetch_assoc();
+				$preferences = $result->fetch_assoc();
+				http_response_code(200);
+			}
+			if($num_regs > 1)
+			{
+				$status = "error";
+				$message = "Usuario duplicado, pongase en contacto con el Administrador de Base de Datos";
+				http_response_code(500);
+			}
+
+
+		
+	}
+	if($num_regs == 0)
+	{
+		$status = "error";
+		$message = "Usuario NO registrado";
+		http_response_code(500);
+	}
+	if($num_regs > 1)
+	{
+		$status = "error";
+		$message = "Usuario duplicado, pongase en contacto con el Administrador de Base de Datos";
+		http_response_code(500);
+	}
+	
+
+
+	$responseJson->status = $status;
+    $responseJson->message = $message;
+    $responseJson->user = $user;
+    $responseJson->preferences = $preferences;
+
+    echo json_encode($responseJson);
+
+$conexion->close();
+?>

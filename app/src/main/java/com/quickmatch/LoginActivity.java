@@ -13,10 +13,19 @@ package com.quickmatch;
         import android.widget.Toast;
 
         import com.loopj.android.http.AsyncHttpResponseHandler;
+        import com.loopj.android.http.JsonHttpResponseHandler;
         import com.loopj.android.http.RequestParams;
 
+        import org.json.JSONArray;
+        import org.json.JSONObject;
+
+        import java.util.ArrayList;
+
+        import components.selectCategories.SuggestionsList;
         import cz.msebera.android.httpclient.Header;
         import data.AsyncHttpClientManagement;
+        import models.Sugerencia;
+        import models.Usuario;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,6 +37,12 @@ public class LoginActivity extends AppCompatActivity {
     public EditText _passwordText;
     public Button _loginButton;
     public TextView _signupLink;
+
+
+    ArrayList<Sugerencia> listaSuggestions;
+
+    String jsonPreferences;
+    Usuario usuario;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,21 +101,47 @@ public class LoginActivity extends AppCompatActivity {
         params.put("email", email);
         params.put("password", password);
 
-        AsyncHttpClientManagement.post(Vars.LOGIN, params, new AsyncHttpResponseHandler() {
+        AsyncHttpClientManagement.post(Vars.LOGIN, params, new JsonHttpResponseHandler(){
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                if (statusCode == 200)
-                    onLoginSuccess();
-                else
-                    Toast.makeText(getApplicationContext(), "No se ha podido iniciar su sesion statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                if (statusCode == 200) {
+
+                    Log.i("Status", statusCode + "");
+
+                    try {
+
+                        Log.i("Status json:", response.toString());
+
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+                        usuario = new Usuario(response.getJSONObject("user"));
+                        //userID = response.getJSONObject("user").getString("id_usuario");
+                        //userName = response.getJSONObject("user").getString("nombre");
+                        jsonPreferences = response.getJSONObject("preferences").getString("json_preferences");
+
+
+                        Toast.makeText(getApplicationContext(), status + " " + message, Toast.LENGTH_LONG).show();
+                        //onLoginSuccess();
+                        progressDialog.dismiss();
+
+                        getPlaces();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        onLoginFailed();
+                        progressDialog.dismiss();
+                    }
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getApplicationContext(), "No se ha podido iniciar su sesion statusCode: " + statusCode, Toast.LENGTH_SHORT).show();
-                onLoginFailed();
-                progressDialog.dismiss();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                Log.i("Status:", statusCode + "");
             }
         });
     }
@@ -127,9 +168,87 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+
+    public void getPlaces(){
+
+        listaSuggestions = new ArrayList<>();
+
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Get Places...");
+        progressDialog.show();
+
+        RequestParams params = new RequestParams();
+        params.put("order", jsonPreferences);
+
+        AsyncHttpClientManagement.get(Vars.GET_PLACES, params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try
+                {
+                    JSONArray places = response.getJSONArray("places");
+
+                    for (int i=0;i<places.length();i++){
+                        JSONObject p = places.getJSONObject(i);
+
+                        String idSucursal = p.getString("idsucursal");
+                        String nombreSucursal = p.getString("nom_sucursal");
+                        String direccion = p.getString("direccion");
+                        String horario = p.getString("horario");
+                        String idTipoNegocio = p.getString("idtiopneg");
+                        String idMunicipio = p.getString("idmun");
+                        String tipoNegocio = p.getString("tipo");
+                        String idCategoria = p.getString("idcateg");
+                        String nombreCategoria = p.getString("categ");
+
+                        Sugerencia sugerencia = new Sugerencia(idSucursal,nombreSucursal,direccion,horario,idTipoNegocio,idMunicipio,tipoNegocio,idCategoria,nombreCategoria);
+
+                        listaSuggestions.add(sugerencia);
+
+                    }
+
+
+                    String message = response.getString("message");
+                    String status = response.getString("status");
+
+                    Toast.makeText(getApplicationContext(), status + " " + message, Toast.LENGTH_LONG).show();
+                    onLoginSuccess();
+                    progressDialog.dismiss();
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    onLoginFailed();
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Toast.makeText(getApplicationContext(), "Error code: " + statusCode, Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+    }
+
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+
+        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+        intent.putParcelableArrayListExtra("listaSuggestions", listaSuggestions);
+        intent.putExtra("user", usuario);
+        //intent.putExtra("id_user", userID);
+        //intent.putExtra("user_name", userName);
+        startActivity(intent);
+
         finish();
     }
 

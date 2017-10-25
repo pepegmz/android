@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
+-- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:8889
--- Tiempo de generacion: 29-08-2017 a las 20:26:33
--- Version del servidor: 5.6.35
--- Version de PHP: 7.1.1
+-- Servidor: localhost
+-- Tiempo de generación: 25-10-2017 a las 07:43:09
+-- Versión del servidor: 10.1.25-MariaDB
+-- Versión de PHP: 5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -17,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `qm`
+-- Base de datos: `quickmatch`
 --
 
 -- --------------------------------------------------------
@@ -38,25 +40,25 @@ CREATE TABLE `categorias` (
 
 INSERT INTO `categorias` (`idcateg`, `idtiponeg`, `categ`) VALUES
 (1, 1, 'Birria'),
-(2, 1, 'Buffete'),
-(3, 1, 'Carnes y cortes'),
-(4, 1, 'Cochinita pibil'),
-(5, 1, 'Comida China'),
-(6, 1, 'Comida Italiana'),
-(7, 1, 'Comida Japonesa'),
-(8, 1, 'Comida Mexicana'),
-(9, 1, 'Comida rapida'),
-(10, 1, 'Comida Regional'),
-(11, 1, 'Gastronomia Internacional'),
-(12, 1, 'Gorditas'),
+(2, 2, 'Buffete'),
+(3, 3, 'Carnes y cortes'),
+(4, 4, 'Cochinita pibil'),
+(5, 5, 'Comida China'),
+(6, 6, 'Comida Italiana'),
+(7, 7, 'Comida Japonesa'),
+(8, 8, 'Comida Mexicana'),
+(9, 9, 'Comida rapida'),
+(10, 10, 'Comida Regional'),
+(11, 11, 'Gastronomia Internacional'),
+(12, 12, 'Gorditas'),
 (13, 1, 'Mariscos'),
-(14, 1, 'Panaderia Artesanal'),
-(15, 1, 'Parrilla'),
-(16, 1, 'Pizza'),
-(17, 1, 'Restaurante'),
-(18, 1, 'Pollo'),
-(19, 1, 'Saludable'),
-(20, 1, 'Tortas');
+(14, 2, 'Panaderia Artesanal'),
+(15, 3, 'Parrilla'),
+(16, 4, 'Pizza'),
+(17, 5, 'Restaurante'),
+(18, 6, 'Pollo'),
+(19, 7, 'Saludable'),
+(20, 8, 'Tortas');
 
 -- --------------------------------------------------------
 
@@ -70,6 +72,13 @@ CREATE TABLE `estado` (
   `nom_est` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `estado`
+--
+
+INSERT INTO `estado` (`idestado`, `idpais`, `nom_est`) VALUES
+(1, 1, 'Aguascalientes');
+
 -- --------------------------------------------------------
 
 --
@@ -82,6 +91,14 @@ CREATE TABLE `municipio` (
   `nom_mun` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `municipio`
+--
+
+INSERT INTO `municipio` (`idmun`, `idestado`, `nom_mun`) VALUES
+(1, 1, 'Aguascalientes'),
+(2, 1, 'Asientos');
+
 -- --------------------------------------------------------
 
 --
@@ -92,6 +109,37 @@ CREATE TABLE `pais` (
   `idpais` int(11) NOT NULL,
   `nom_pais` varchar(30) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `pais`
+--
+
+INSERT INTO `pais` (`idpais`, `nom_pais`) VALUES
+(1, 'Mexico');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `preferences`
+--
+
+CREATE TABLE `preferences` (
+  `id_preference` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `json_preferences` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `preferences`
+--
+
+INSERT INTO `preferences` (`id_preference`, `id_user`, `json_preferences`) VALUES
+(1, 2, '10, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11'),
+(2, 1, '10, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11'),
+(3, 3, '7, 8, 10, 12, 1, 3, 5, 2, 4, 6, 9, 11'),
+(4, 4, '6, 1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 8'),
+(5, 5, '4, 7, 9, 11, 2, 3, 5, 8, 10, 12, 1, 6'),
+(6, 6, '5, 1, 4, 7, 8, 2, 3, 6, 9, 10, 11, 12');
 
 -- --------------------------------------------------------
 
@@ -114,13 +162,13 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`idprod`, `nombre`, `descripcion`, `imagen`, `precio`, `idsucursal`) VALUES
 (1, 'mole', 'mole tradicional', '<esaf<aef', 123, 1),
-(2, 'com', 'computadora.jpg', 'okaoaks', 200, 0),
-(3, 'carara', 'camara 18mp', 'camara.jpg', 123, 0),
-(4, 'asdfadasd', 'asdaffarwbrWA AEWRTTJ D', 'camara.jpg', 1203, 0),
-(5, 'trwrtvw', 'wetsregsnwgwenfdwgerf', 'computadora.jpg', 1000, 0),
-(6, 'adswadasd', 'camara 18mp', 'camara.jpg', 200, 0),
-(7, 'sdgsdg', 'sdgsdg', 'camara.jpg', 213, 0),
-(8, 'sdgsdg', 'sdgsdg', 'camara.jpg', 213, 0);
+(2, 'com', 'computadora.jpg', 'okaoaks', 200, 2),
+(3, 'carara', 'camara 18mp', 'camara.jpg', 123, 3),
+(4, 'asdfadasd', 'asdaffarwbrWA AEWRTTJ D', 'camara.jpg', 1203, 4),
+(5, 'trwrtvw', 'wetsregsnwgwenfdwgerf', 'computadora.jpg', 1000, 5),
+(6, 'adswadasd', 'camara 18mp', 'camara.jpg', 200, 2),
+(7, 'sdgsdg', 'sdgsdg', 'camara.jpg', 213, 3),
+(8, 'sdgsdg', 'sdgsdg', 'camara.jpg', 213, 4);
 
 -- --------------------------------------------------------
 
@@ -187,15 +235,15 @@ CREATE TABLE `sucursal` (
 --
 
 INSERT INTO `sucursal` (`idsucursal`, `nom_sucursal`, `nom_encargado`, `direccion`, `calle`, `noext`, `noitn`, `fracc`, `cp`, `mun`, `telefono`, `img1`, `img2`, `img3`, `descripcion`, `correo_contacto`, `horario`, `idprod`, `idtiopneg`, `id_tipous`, `id_servicio`, `id_etiquetas`, `idmun`) VALUES
-(2, 'Yambak Bar', 'null', 'Andador Paseo Arturo J. Pani 112, Barrio de San Marcos, 20000 Aguascalientes, Ags., Mexico', '<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5631.5463046963905!2d-102.30169747438528!3d21.876100066414878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xa67935ef5998e6bf!2sPalenque+de+la+Feria+Nacional+de+San+Marcos!5e0!3m2!1ses-419!2smx!4v1494353382305\" width=\"800\" height=\"600\" frameborder=\"0\" style=\"border:0\" allowfullscreen=\"\"></iframe>', 0, 0, 0, 0, 0, '+52 449 916 0969', '', '', '', '', 'yambak@hotmail.com', 'lunes-martes=cerrado  miercoles-jueves=14-2  viernes-sabado=14-4  domingo=14-1\r', 0, 0, 0, 0, 0, 0),
-(3, 'Hasta Atras Bar', 'null', '\"Purisima 3, San Jose Aculco, 20000 Mexico, D.F., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 994 0459', '', '', '', '', '', 'lunes-domingo=18-2\r', 0, 0, 0, 0, 0, 0),
-(4, 'Hooligan\'s Neighborhood P', 'null', '\"20020, Calle Gral. Ignacio Zaragoza 1601, Circunvalacion Nte., 20020 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, ' 01 449 919 6547', '', '', '', '', 'hooligans_pub@hotmail.com', 'miercoles-domingo=18-2  lunes-martes=cerrado\r', 0, 0, 0, 0, 0, 0),
-(5, 'San Pancho', 'null', '\"Av. Las Americas 102, Las Americas, 20230 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 918 4853', '', '', '', '', '', 'lunes-domingo=13-2\r', 0, 0, 0, 0, 0, 0),
-(6, 'Merendero San Marcos', 'null', '\"De La Feria 144, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 918 1928', '', '', '', '', '', 'lunes-domingo=13-3\r', 0, 0, 0, 0, 0, 0),
-(7, 'Merendero Kiko\'s', 'null', '\"Calle Arturo Pani 132, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 916 2191', '', '', '', '', 'jmanueldeanda@yahoo.com', 'lunes-domingo=12-2\r', 0, 0, 0, 0, 0, 0),
-(8, 'Merendero Don Chendo', 'null', '\"Andador Arturo J. Pani 130, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 916 1680', '', '', '', '', '', 'lunes-domingo=13-2\r', 0, 0, 0, 0, 0, 0),
-(9, 'St. James Irish Pub', 'null', '\"Av Independencia 1872, Jardines de la Concepcion II, Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 'martes-sabado=17-2  domingo=14-24  lunes=cerrado\r', 0, 0, 0, 0, 0, 0),
-(10, 'El Tunel', 'null', '\"Av Independencia, Jardines de La Concepcion, Jardines de la Concepcion II, 20120 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 'jueves-sabado=21-2  domingo-miercoles=cerrado\r', 0, 0, 0, 0, 0, 0),
+(2, 'Yambak Bar', 'null', 'Andador Paseo Arturo J. Pani 112, Barrio de San Marcos, 20000 Aguascalientes, Ags., Mexico', '<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5631.5463046963905!2d-102.30169747438528!3d21.876100066414878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xa67935ef5998e6bf!2sPalenque+de+la+Feria+Nacional+de+San+Marcos!5e0!3m2!1ses-419!2smx!4v1494353382305\" width=\"800\" height=\"600\" frameborder=\"0\" style=\"border:0\" allowfullscreen=\"\"></iframe>', 0, 0, 0, 0, 0, '+52 449 916 0969', '', '', '', '', 'yambak@hotmail.com', 'lunes-martes=cerrado  miercoles-jueves=14-2  viernes-sabado=14-4  domingo=14-1\r', 0, 1, 0, 0, 0, 1),
+(3, 'Hasta Atras Bar', 'null', '\"Purisima 3, San Jose Aculco, 20000 Mexico, D.F., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 994 0459', '', '', '', '', '', 'lunes-domingo=18-2\r', 0, 1, 0, 0, 0, 1),
+(4, 'Hooligan\'s Neighborhood P', 'null', '\"20020, Calle Gral. Ignacio Zaragoza 1601, Circunvalacion Nte., 20020 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, ' 01 449 919 6547', '', '', '', '', 'hooligans_pub@hotmail.com', 'miercoles-domingo=18-2  lunes-martes=cerrado\r', 0, 1, 0, 0, 0, 1),
+(5, 'San Pancho', 'null', '\"Av. Las Americas 102, Las Americas, 20230 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 918 4853', '', '', '', '', '', 'lunes-domingo=13-2\r', 0, 2, 0, 0, 0, 1),
+(6, 'Merendero San Marcos', 'null', '\"De La Feria 144, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 918 1928', '', '', '', '', '', 'lunes-domingo=13-3\r', 0, 2, 0, 0, 0, 1),
+(7, 'Merendero Kiko\'s', 'null', '\"Calle Arturo Pani 132, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 916 2191', '', '', '', '', 'jmanueldeanda@yahoo.com', 'lunes-domingo=12-2\r', 0, 2, 0, 0, 0, 1),
+(8, 'Merendero Don Chendo', 'null', '\"Andador Arturo J. Pani 130, Barrio de San Marcos, 20070 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 916 1680', '', '', '', '', '', 'lunes-domingo=13-2\r', 0, 3, 0, 0, 0, 1),
+(9, 'St. James Irish Pub', 'null', '\"Av Independencia 1872, Jardines de la Concepcion II, Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 'martes-sabado=17-2  domingo=14-24  lunes=cerrado\r', 0, 3, 0, 0, 0, 1),
+(10, 'El Tunel', 'null', '\"Av Independencia, Jardines de La Concepcion, Jardines de la Concepcion II, 20120 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 'jueves-sabado=21-2  domingo-miercoles=cerrado\r', 0, 3, 0, 0, 0, 1),
 (11, 'Merendero San Pancho', 'null', '\"Francisco G. Hornedo 715, Barrio de la Purisima, 20259 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, ' 01 449 993 0006', '', '', '', '', 'merenderomsp@gmail.com', 'lunes-domingo=13-2\r', 0, 0, 0, 0, 0, 0),
 (12, 'Merendero San Pancho', 'null', '\"Luis Donaldo Colosio 635, Jardines de la Concepcion, Jardines de la Concepcion II, 20120 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 993 0006', '', '', '', '', 'merenderomsp@gmail.com', 'lunes-domingo=13-2\r', 0, 0, 0, 0, 0, 0),
 (13, 'Yermanelas ', 'null', '\"Av. Francisco I. Madero 462, Zona Centro, 20000 Aguascalientes, Ags., Mexico\"', '', 0, 0, 0, 0, 0, '+52 449 448 6331', '', '', '', '', '', 'miercoles-sabado=20-2  domingo-martes=cerrado\r', 0, 0, 0, 0, 0, 0),
@@ -513,7 +561,12 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `nombre`, `correo`, `telefono`, `pass`, `id_gusto`, `id_tipous`, `idmun`) VALUES
-(2, 'lalo', 'lalo@mail.com', 1234, '1234', 1, 2, 0);
+(1, 'Rafa', 'rafa@mail.com', 2147483647, 'a123456', 1, 2, 1),
+(2, 'Luis', 'luis@mail.com', 2147483647, 'A123456', 1, 2, 1),
+(3, 'Ejemplo', 'ejemplo@mail.com', 2147483647, 'a123456', 1, 2, 1),
+(4, 'Dexter', 'dexte@gmail.com', 2147483647, 'dexter13', 1, 2, 1),
+(5, 'Adolfo Gomez', 'adolfo.gomez999@mail.com', 2147483647, 'a12345', 1, 2, 1),
+(6, 'Norma', 'norma@hotmail.com', 2147483647, 'a12345', 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -540,7 +593,7 @@ INSERT INTO `zona` (`idzona`, `zona`) VALUES
 (7, 'Sur-Este');
 
 --
--- indices para tablas volcadas
+-- Índices para tablas volcadas
 --
 
 --
@@ -568,6 +621,12 @@ ALTER TABLE `municipio`
 --
 ALTER TABLE `pais`
   ADD PRIMARY KEY (`idpais`);
+
+--
+-- Indices de la tabla `preferences`
+--
+ALTER TABLE `preferences`
+  ADD PRIMARY KEY (`id_preference`);
 
 --
 -- Indices de la tabla `producto`
@@ -622,22 +681,27 @@ ALTER TABLE `zona`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `idcateg` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `idcateg` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `idestado` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idestado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT de la tabla `municipio`
 --
 ALTER TABLE `municipio`
-  MODIFY `idmun` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idmun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT de la tabla `pais`
 --
 ALTER TABLE `pais`
-  MODIFY `idpais` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idpais` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT de la tabla `preferences`
+--
+ALTER TABLE `preferences`
+  MODIFY `id_preference` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
@@ -662,7 +726,7 @@ ALTER TABLE `tipo_neg`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `zona`
 --
@@ -683,12 +747,7 @@ ALTER TABLE `municipio`
 --
 ALTER TABLE `reservacion`
   ADD CONSTRAINT `reservacion_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_tipous`) REFERENCES `tipo_usuario` (`id_tipous`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

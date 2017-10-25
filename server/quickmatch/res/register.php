@@ -5,7 +5,7 @@
  * @link http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/ Complete tutorial
  */
 
-require_once 'include/DB_Functions.php';
+require_once 'functions.php';
 $db = new DB_Functions();
 
 // json response array

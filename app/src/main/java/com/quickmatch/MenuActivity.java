@@ -1,12 +1,11 @@
 package com.quickmatch;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,18 +15,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
-import components.selectCategories.SelectPreferencesActivity;
-import data.HttpHandler;
-import models.Category;
+import components.selectCategories.DetailsTipoNeg;
+import components.selectCategories.EditPerfil;
+import components.selectCategories.SuggestionsList;
+import models.Sugerencia;
+import models.Usuario;
+
+/*
+@Inputs : ArrayList<Sugerencia> listaSuggestions;
+@Outputs :
+*/
 
 public class MenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+        public ArrayList<Sugerencia> listaSuggestions;
+        //public DetailsTipoNeg detailsTipoNeg;
+        public Sugerencia currentSugerencia;
+        public Usuario usuario;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,10 @@ public class MenuActivity extends AppCompatActivity
                 setContentView(R.layout.menu_activity);
                 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
+
+                //detailsTipoNeg = new DetailsTipoNeg();
+                currentSugerencia = new Sugerencia("1", "2", "3", "4", "5", "6", "7", "8", "9");
+
 
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                 fab.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +66,13 @@ public class MenuActivity extends AppCompatActivity
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 navigationView.setNavigationItemSelectedListener(this);
+
+                displaySelectedScreen(R.id.nav_go);
+
+                Intent intent = getIntent();
+                listaSuggestions = intent.getParcelableArrayListExtra("listaSuggestions");
+                usuario = (Usuario)intent.getSerializableExtra("user");
+                //ID_USUARIO = intent.getStringExtra("id_user");
         }
 
         @Override
@@ -91,6 +111,8 @@ public class MenuActivity extends AppCompatActivity
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
                 // Handle navigation view item clicks here.
+
+                /*
                 int id = item.getItemId();
 
                 if (id == R.id.nav_camera) {
@@ -110,6 +132,54 @@ public class MenuActivity extends AppCompatActivity
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
+
+                */
+
+                displaySelectedScreen(item.getItemId());
+                return true;
+        }
+
+        public void changePage(Fragment fragment){
+                if (fragment != null) {
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, fragment);
+                        ft.commit();
+                }
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+        }
+
+        public void viewDetailsPlace(){
+                //detailsTipoNeg.setTiponeg("Hola soy pepe :)");
+                DetailsTipoNeg detailsTipoNeg = new DetailsTipoNeg();
+                changePage(detailsTipoNeg);
+              //here
+        }
+
+        private void displaySelectedScreen(int itemId) {
+
+                //creating fragment object
+                Fragment fragment = null;
+
+                //initializing the fragment object which is selected
+                switch (itemId) {
+                        case R.id.nav_go:
+                                fragment = new SuggestionsList();
+                                break;
+                        case R.id.nav_edit:
+                                fragment = new EditPerfil();
+                                break;
+                 /*       case R.id.nav_menu2:
+                                fragment = new Menu2();
+                                break;
+                        case R.id.nav_menu3:
+                                fragment = new Menu3();
+                                break;*/
+                }
+
+                //replacing the fragment
+                changePage(fragment);
         }
 
         /*

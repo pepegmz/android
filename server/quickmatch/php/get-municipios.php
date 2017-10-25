@@ -4,20 +4,19 @@ error_reporting(0);
 
 include("conexion.php");
 
+$id_estado=$_GET["id_estado"];
+
 // Realizar una consulta MySQL
-$query = 'SELECT * FROM categorias c, tipo_neg n where c.idtiponeg = n.idtiponeg';
+$query = "SELECT * FROM municipio where idestado='$id_estado'";
 $result = $conexion->query($query);
 
 if ($result){
 	$status="success";
 	$message="Consulta Finalizada";
-  
 }else{
 	$status="error";
-	$message="No se puede obtener las categorias";
-   
+	$message="No se puede obtener los municipios";
 }
-
 
 //imprimir los resultados en json:
 $rawdata = array(); //creamos un array
@@ -34,7 +33,7 @@ $rawdata = array(); //creamos un array
     //prepare response:
     $responseJson->status = $status;
     $responseJson->message = $message;
-    $responseJson->categorias = $rawdata;
+    $responseJson->municipios = $rawdata;
 
     echo json_encode($responseJson);
 

@@ -9,20 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import java.io.Console;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,15 +28,14 @@ import components.SignupActivity.DatePickerFragment;
 import components.SignupActivity.EstadosArrayAdapter;
 import components.SignupActivity.MunicipiosArrayAdapter;
 import components.SignupActivity.PaisesArrayAdapter;
-import components.selectCategories.SelectPreferencesActivity;
 import cz.msebera.android.httpclient.Header;
 import data.AsyncHttpClientManagement;
 import data.HttpHandler;
-import models.Category;
 import models.Estado;
 import models.Municipio;
 import models.Negocio;
 import models.Pais;
+import models.Usuario;
 
 public class SignupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "SignupActivity";
@@ -61,6 +56,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     ArrayList<Municipio> listaMunicipios;
 
     public static String MUNICIPIO_ID;
+    Usuario usuario;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,27 +82,6 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         sp_municipios.setEnabled(false);
 
 
-        // Spinner Drop down elements
-        List<String> estados = new ArrayList<String>();
-        estados.add("Aguascalientes");
-        estados.add("Asientos");
-        estados.add("Calvillo");
-        estados.add("Cosio");
-        estados.add("El LLano");
-        estados.add("Jesus Maria");
-        estados.add("Pabellon");
-        estados.add("Rincon de Romos");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, estados);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        sp_municipios.setAdapter(dataAdapter);
-
-
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +102,9 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void getPaises(){
+
+        listaPaises = new ArrayList<Pais>();
+
         AsyncHttpClientManagement.get(Vars.GET_PAISES, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -144,7 +122,6 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
                         //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
 
-                        listaPaises = new ArrayList<Pais>();
                         listaPaises.add(new Pais(idPais, namePais));
 
                     }
@@ -192,6 +169,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void getEstados(String paisID){
 
+        listaEstados = new ArrayList<Estado>();
+
         RequestParams params = new RequestParams();
         params.put("id_pais", paisID);
 
@@ -212,7 +191,6 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
                         //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
 
-                        listaEstados = new ArrayList<Estado>();
                         listaEstados.add(new Estado(idEstado, nameEstado, idPais));
 
                     }
@@ -254,6 +232,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void getMunicipios(String estadoID){
 
+        listaMunicipios = new ArrayList<Municipio>();
+
         RequestParams params = new RequestParams();
         params.put("id_estado", estadoID);
 
@@ -274,7 +254,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
                         //Toast.makeText(SignupActivity.this, namePais,Toast.LENGTH_LONG).show();
 
-                        listaMunicipios = new ArrayList<Municipio>();
+
                         listaMunicipios.add(new Municipio(idMunicipio, nameMunicipio, idEstado));
 
                     }
@@ -339,16 +319,51 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
         // TODO: Implement your own signup logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        RequestParams params = new RequestParams();
+        params.put("name", name);
+        params.put("email", email);
+        params.put("telephone", "12344567890");
+        params.put("password", password);
+        params.put("idgusto", "1");
+        params.put("idrol", "2");
+        params.put("idmun", MUNICIPIO_ID);
+
+        AsyncHttpClientManagement.post(Vars.REGISTER, params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try
+                {
+                    String status = response.getString("status");
+                    String message = response.getString("message");
+                    usuario = new Usuario(response.getJSONObject("usuario"));
+
+                    Log.i("UResponse", usuario.toString());
+
+                    Toast.makeText(getApplicationContext(), status + " " + message, Toast.LENGTH_LONG).show();
+                    onSignupSuccess();
+                    progressDialog.dismiss();
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    onSignupFailed();
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Toast.makeText(getApplicationContext(), "Error code: " + statusCode, Toast.LENGTH_LONG).show();
+
+
+            }
+        });
     }
 
 
@@ -361,7 +376,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -500,6 +515,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
             Intent intent = new Intent(SignupActivity.this, SelectPreferencesActivity.class);
             intent.putParcelableArrayListExtra("tipoNegociosList", tipoNegociosList);
+            intent.putExtra("user", usuario);
             startActivity(intent);
             SignupActivity.this.finish();
 
@@ -518,6 +534,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
              */
         }
+
+
 
     }
 }

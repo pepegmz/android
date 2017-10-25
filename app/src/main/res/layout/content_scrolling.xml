@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.quickmatch.MenuActivity"
+    tools:showIn="@layout/details_tiponeg"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/txt_tiponeg_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:padding="5dp"
+            android:text="Tipo Negocio"
+            android:textColor="@color/black"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/txt_tipocateg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:padding="5dp"
+            android:text="Tipo Categoria"
+            android:textColor="@color/black"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/icon_location"
+                android:padding="5dp"
+                />
+
+            <TextView
+                android:id="@+id/txt_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Este es eldsadasdsadasdasddsadasdasdasdasdasdasdas dsad sad sa das dsa dsa das d asd asd asasdsadas texto"
+                android:textColor="@color/black"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/clock"
+                android:padding="5dp"
+                />
+
+            <TextView
+                android:id="@+id/txt_horario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Este es eldsadasdsadasdasddsadasdasdasdasdasdasdas dsad sad sa das dsa dsa das d asd asd asasdsadas texto"
+                android:textColor="@color/black"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/icon_phone"
+                android:padding="5dp"
+                />
+
+            <TextView
+                android:id="@+id/txt_telephone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Este es eldsadasdsadasdasddsadasdasdasdasdasdasdas dsad sad sa das dsa dsa das d asd asd asasdsadas texto"
+                android:textColor="@color/black"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -5,19 +5,16 @@ error_reporting(0);
 include("conexion.php");
 
 // Realizar una consulta MySQL
-$query = 'SELECT * FROM categorias c, tipo_neg n where c.idtiponeg = n.idtiponeg';
+$query = 'SELECT * FROM tipo_neg';
 $result = $conexion->query($query);
 
 if ($result){
 	$status="success";
 	$message="Consulta Finalizada";
-  
 }else{
 	$status="error";
-	$message="No se puede obtener las categorias";
-   
+	$message="No se puede obtener los tipos de negocios";
 }
-
 
 //imprimir los resultados en json:
 $rawdata = array(); //creamos un array
@@ -34,7 +31,7 @@ $rawdata = array(); //creamos un array
     //prepare response:
     $responseJson->status = $status;
     $responseJson->message = $message;
-    $responseJson->categorias = $rawdata;
+    $responseJson->tipoNegocios = $rawdata;
 
     echo json_encode($responseJson);
 
